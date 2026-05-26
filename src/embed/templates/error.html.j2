@@ -1,0 +1,31 @@
+{% extends "base.html.j2" %}
+{% set title = "Embed unavailable" %}
+{% block extra_style %}
+  body {
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  .err {
+    max-width: 480px;
+    text-align: center;
+    color: canvastext;
+  }
+  .err h1 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+  .err p {
+    font-size: 0.875rem;
+    margin: 0;
+    opacity: 0.75;
+  }
+{% endblock %}
+{% block body %}
+<div class="err" role="alert">
+  <h1>Embed unavailable</h1>
+  <p>{{ message }}</p>
+</div>
+{% endblock %}

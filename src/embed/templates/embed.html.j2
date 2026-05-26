@@ -1,0 +1,22 @@
+{% extends "base.html.j2" %}
+{% block body %}
+{# Two shapes share this template:
+
+   1. provider_html present -> splice oEmbed blob
+      with |safe. Provider chose the markup,
+      including any nested iframe.
+   2. plain_iframe_src present -> emit a single
+      iframe pointing at the target URL. Used for
+      frameable targets without a known oEmbed
+      provider.
+#}
+{% if provider_html %}
+{{ provider_html|safe }}
+{% elif plain_iframe_src %}
+<iframe src="{{ plain_iframe_src }}"
+        title="{{ title }}"
+        referrerpolicy="no-referrer"
+        allow="fullscreen"
+        loading="eager"></iframe>
+{% endif %}
+{% endblock %}

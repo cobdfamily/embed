@@ -1,0 +1,63 @@
+{% extends "base.html.j2" %}
+{% block extra_style %}
+  body {
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  .card {
+    max-width: 520px;
+    width: 100%;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    background: canvas;
+    color: canvastext;
+    text-decoration: none;
+    display: block;
+  }
+  .card:hover, .card:focus-visible {
+    border-color: #888;
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+  .card .title {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+  }
+  .card .host {
+    font-size: 0.875rem;
+    opacity: 0.7;
+    margin: 0;
+  }
+  .card .open {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: #3a6fd1;
+  }
+  @media (prefers-color-scheme: dark) {
+    .card { border-color: #555; }
+    .card:hover, .card:focus-visible { border-color: #aaa; }
+    .card .open { color: #7fa6ff; }
+  }
+{% endblock %}
+{% block body %}
+{# Click-through card. Real anchor (no script)
+   so it's keyboard + screen-reader accessible
+   by default. target=_top opens in the consumer
+   page's top window so the user leaves the
+   embedding iframe and lands on the real URL
+   in their browser, rather than navigating
+   inside the iframe and getting stuck. #}
+<a class="card"
+   href="{{ target_url }}"
+   target="_top"
+   rel="noopener nofollow"
+   referrerpolicy="no-referrer">
+  <p class="title">{{ title }}</p>
+  <p class="host">{{ host }}</p>
+  <p class="open">Open at {{ host }} &rarr;</p>
+</a>
+{% endblock %}

@@ -1,0 +1,45 @@
+# Local-dev / production-shape compose for embed.
+#
+# Single service. No database, no redis -- the
+# in-process LRU is enough for v0.1. Traefik in
+# front terminates TLS for embed.openapis.ca and
+# routes / + /v/embed to this container.
+#
+# Override EMBED_TAG to pin a specific version.
+
+services:
+  embed:
+    image: kibble.apps.blindhub.ca/cobdfamily/embed:${EMBED_TAG:-latest}
+    container_name: embed
+    ports:
+      - "${EMBED_HTTP_PORT:-8004}:8000"
+    environment:
+      EMBED_FETCH_BYTE_CAP: ${EMBED_FETCH_BYTE_CAP:-262144}
+      EMBED_FETCH_TIMEOUT_SECONDS: ${EMBED_FETCH_TIMEOUT_SECONDS:-5}
+      EMBED_CACHE_MAX_AGE_SECONDS: ${EMBED_CACHE_MAX_AGE_SECONDS:-3600}
+      EMBED_CACHE_SLOTS: ${EMBED_CACHE_SLOTS:-1024}
+      # Override the UA if a specific provider
+      # blocks the default (Twitter/X is known to
+      # filter aggressively on UA).
+      EMBED_FETCH_USER_AGENT: ${EMBED_FETCH_USER_AGENT:-}
+    healthcheck:
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/healthz', timeout=2).status==200 else 1)"
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    restart: unless-stopped
+    labels:
+      # Traefik labels for embed.openapis.ca.
+      # Strip the host header before forwarding so
+      # the service sees the upstream Host as
+      # embed.openapis.ca for log clarity.
+      - "traefik.enable=true"
+      - "traefik.http.routers.embed.rule=Host(`embed.openapis.ca`)"
+      - "traefik.http.routers.embed.entrypoints=websecure"
+      - "traefik.http.routers.embed.tls.certresolver=letsencrypt"
+      - "traefik.http.services.embed.loadbalancer.server.port=8000"

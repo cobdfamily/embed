@@ -1,0 +1,50 @@
+[project]
+name = "embed"
+version = "0.1.0"
+description = "oEmbed / iframe-shim service for cobd-embed. Serves a CSP-isolated HTML wrapper at embed.openapis.ca/v/embed."
+readme = "README.md"
+license = "AGPL-3.0"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.34",
+  "pydantic>=2.10",
+  "pydantic-settings>=2.6",
+  "httpx>=0.28",
+  "jinja2>=3.1",
+  # html.parser comes with the stdlib; we use it for
+  # the title-scrape fallback in preview cards, so no
+  # extra dep there. beautifulsoup4 would be the bigger
+  # hammer but isn't justified for one tag lookup.
+]
+
+[project.scripts]
+embed = "embed.main:run"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3",
+  "pytest-asyncio>=0.25",
+  "ruff>=0.8",
+  # httpx provides the in-process TestClient transport;
+  # requests is for the docker-image e2e suite, matching
+  # the salmon / townsfolk / brl / pandoc pattern.
+  "requests>=2.32",
+  "respx>=0.21",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/embed"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src"]
