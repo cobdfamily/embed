@@ -43,7 +43,7 @@ def test_healthz(client) -> None:
 
 
 def test_embed_rejects_missing_url(client) -> None:
-    r = client.get("/v/embed")
+    r = client.get("/v1/embed")
     # FastAPI's Query(...) declares the param
     # required; missing -> 422 from pydantic before
     # our handler runs.
@@ -52,7 +52,7 @@ def test_embed_rejects_missing_url(client) -> None:
 
 def test_embed_rejects_bad_scheme(client) -> None:
     r = client.get(
-        "/v/embed",
+        "/v1/embed",
         params={"url": "javascript:alert(1)"},
     )
     assert r.status_code == 400
@@ -60,7 +60,7 @@ def test_embed_rejects_bad_scheme(client) -> None:
 
 
 def test_embed_rejects_relative(client) -> None:
-    r = client.get("/v/embed", params={"url": "/foo"})
+    r = client.get("/v1/embed", params={"url": "/foo"})
     assert r.status_code == 400
 
 
@@ -83,7 +83,7 @@ def test_embed_oembed_path_youtube(client) -> None:
         },
     )
     r = client.get(
-        "/v/embed",
+        "/v1/embed",
         params={
             "url": "https://www.youtube.com/watch?v=abc",
         },
@@ -110,7 +110,7 @@ def test_embed_iframe_fallback_when_frameable(client) -> None:
         text="<html><head><title>Hello</title></head></html>",
     )
     r = client.get(
-        "/v/embed",
+        "/v1/embed",
         params={"url": "https://example.com/article"},
     )
     assert r.status_code == 200
@@ -132,7 +132,7 @@ def test_embed_preview_card_when_refused(client) -> None:
         text="<html><head><title>Locked Page</title></head></html>",
     )
     r = client.get(
-        "/v/embed",
+        "/v1/embed",
         params={"url": "https://locked.example/x"},
     )
     assert r.status_code == 200
@@ -157,8 +157,8 @@ def test_embed_cache_returns_same_body_on_repeat(client) -> None:
         },
     )
     url = "https://www.youtube.com/watch?v=cache-test"
-    r1 = client.get("/v/embed", params={"url": url})
-    r2 = client.get("/v/embed", params={"url": url})
+    r1 = client.get("/v1/embed", params={"url": url})
+    r2 = client.get("/v1/embed", params={"url": url})
     assert r1.status_code == 200
     assert r2.status_code == 200
     assert r1.text == r2.text
@@ -178,7 +178,7 @@ def test_embed_request_id_echoed(client) -> None:
         text="<html><head><title>Ex</title></head></html>",
     )
     r = client.get(
-        "/v/embed",
+        "/v1/embed",
         params={"url": "https://example.com/"},
         headers={"X-Request-ID": "test-id-123"},
     )
@@ -194,7 +194,7 @@ def test_embed_request_id_minted_when_absent(client) -> None:
         text="<html><head><title>Ex</title></head></html>",
     )
     r = client.get(
-        "/v/embed",
+        "/v1/embed",
         params={"url": "https://example.org/"},
     )
     assert r.headers.get("x-request-id")

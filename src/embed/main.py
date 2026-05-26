@@ -1,7 +1,7 @@
 """embed FastAPI app.
 
   GET  /                       liveness
-  GET  /v/embed?url=<target>   HTML wrapper response
+  GET  /v1/embed?url=<target>  HTML wrapper response
 
 The wrapper resolves through three paths in order:
 
@@ -129,7 +129,7 @@ async def liveness() -> dict:
 
 
 @app.get(
-    "/v/embed",
+    "/v1/embed",
     tags=["Embed"],
     response_class=HTMLResponse,
     responses={

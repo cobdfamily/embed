@@ -10,12 +10,28 @@ service is pre-1.0, so the patch part of the
 version moves freely for any change; major / minor
 bumps are reserved for after 1.0.
 
+## [0.1.1] -- 2026-05-26
+
+### Fixed
+
+- **Route is `/v1/embed`, not `/v/embed`.** The
+  0.1.0 release used `/v/embed`; this was a
+  misread of the openapis.ca naming convention
+  (sibling services like `location.openapis.ca/v1/
+  lookup` use `/v1/`). Renamed across the
+  service, the test suite, the docs, and the
+  paired `<cobd-embed>` element default. clf-core
+  7.0.1 ships the matching element-default fix.
+
+  No backwards-compat shim: 0.1.0 was registry-
+  only, never deployed at `embed.openapis.ca`.
+
 ## [0.1.0] -- 2026-05-26
 
 ### Added
 
 - **Initial release.** FastAPI service at
-  `embed.openapis.ca/v/embed?url=<target>`.
+  `embed.openapis.ca/v1/embed?url=<target>`.
 
 - **Three-stage resolver.** Tries the oEmbed
   provider registry first (YouTube, Vimeo,

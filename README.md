@@ -3,7 +3,7 @@
 [![license](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 oEmbed / iframe-shim service for `<cobd-embed>`.
-Lives at `https://embed.openapis.ca/v/embed?url=...`.
+Lives at `https://embed.openapis.ca/v1/embed?url=...`.
 One endpoint, one envelope: returns a self-contained
 HTML document the consumer page loads in a sandboxed
 iframe.
@@ -25,7 +25,7 @@ an anchor:
 upgrades to:
 
 ```html
-<iframe src="https://embed.openapis.ca/v/embed?url=..."
+<iframe src="https://embed.openapis.ca/v1/embed?url=..."
         sandbox="allow-scripts allow-popups
                  allow-popups-to-escape-sandbox"
         loading="lazy"></iframe>
@@ -52,10 +52,10 @@ time. The CSP win is worth it.
 ```
 GET  /                  liveness JSON
 GET  /healthz           liveness text
-GET  /v/embed?url=...   HTML wrapper response
+GET  /v1/embed?url=...   HTML wrapper response
 ```
 
-The `/v/embed` resolver runs in three stages:
+The `/v1/embed` resolver runs in three stages:
 
 1. **oEmbed.** If the URL matches a known provider
    (YouTube, Vimeo, SoundCloud, Bluesky, Mastodon,
@@ -100,7 +100,7 @@ production.
 uv sync
 uv run pytest                       # unit + app tests
 uv run uvicorn embed.main:app --reload
-curl 'http://localhost:8000/v/embed?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ' | head
+curl 'http://localhost:8000/v1/embed?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ' | head
 ```
 
 Docker:
@@ -159,7 +159,7 @@ control their `X-Frame-Options`.
           v
    consumer page (CSP-strict)
           |
-          v  <iframe src=embed.openapis.ca/v/embed?url=...>
+          v  <iframe src=embed.openapis.ca/v1/embed?url=...>
           |
    Traefik -> embed (FastAPI, this service)
                   |

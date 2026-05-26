@@ -140,7 +140,7 @@ hundreds of req/sec because the LRU saturates
 quickly on hot URLs.
 
 Cold replicas (no cache) are slower for the
-first N requests. Pre-warm by hitting `/v/embed`
+first N requests. Pre-warm by hitting `/v1/embed`
 with the top-N URLs as part of the deploy
 script if cold-start latency matters.
 
